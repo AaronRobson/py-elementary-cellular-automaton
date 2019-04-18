@@ -92,7 +92,7 @@ class Settings:
 
     def IntToNeighbours(self, intNeighbours):
         assert intNeighbours in self.neighhbourHoodConfigurationIndexes
-    #bin assumes two choices
+        #bin assumes two choices
         return (bool(int(b)) for b in bin(intNeighbours)[2:])
 
     def NeighboursToInt(self, neighbours):
@@ -215,48 +215,48 @@ def RuleGeneratorArrangementsPaddedStrings(*args, **kwargs):
         yield '\n'.join(map(SymbolsToString, arrangement))
 
 def ToSVG(data, side=10, foreground='#FFFFFF', background='#000000'):
-        side = int(side)
-        if side <= 0:
-            raise ValueError('Only strictly positive whole numbers shall be accepted as side lengths.')
+    side = int(side)
+    if side <= 0:
+        raise ValueError('Only strictly positive whole numbers shall be accepted as side lengths.')
 
-        data = tuple(data)
-        lineCount = len(data)
-        generation = lineCount-1
-        width = s.WidthAtGivenGeneration(generation) * side
-        height = lineCount * side
+    data = tuple(data)
+    lineCount = len(data)
+    generation = lineCount-1
+    width = s.WidthAtGivenGeneration(generation) * side
+    height = lineCount * side
 
-        yield '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
-        yield '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
-        yield '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="%dpx" height="%dpx">' % (width, height)
-        yield '\t<rect width="%d" height="%d" fill="%s" />' % (width, height, background)
-        #yield '\t<!-- Rule %s, Generation: %d, Side: %d -->' % (self.wolframCode, generation, side)
+    yield '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
+    yield '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
+    yield '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="%dpx" height="%dpx">' % (width, height)
+    yield '\t<rect width="%d" height="%d" fill="%s" />' % (width, height, background)
+    #yield '\t<!-- Rule %s, Generation: %d, Side: %d -->' % (self.wolframCode, generation, side)
+    yield ''
+
+    yield '\t<g fill="%s">' % (foreground)
+
+    def Rect(width, height):
+        def shape(x, y):
+            return '\t\t<rect x="%d" y="%d" width="%d" height="%d" />' % (x*width, y*height, width, height)
+        return shape
+
+    def Square(dimension):
+        return Rect(dimension, dimension)
+
+    Draw = Square(side)
+
+    for y, yItem in enumerate(data):
+        yield '\t\t<!-- Line: %d -->' % (y)
+
+        for x, xItem in enumerate(yItem):
+            if xItem:
+                yield Draw(x, y)
+
         yield ''
 
-        yield '\t<g fill="%s">' % (foreground)
+    yield '\t</g>'
 
-        def Rect(width, height):
-            def shape(x, y):
-                return '\t\t<rect x="%d" y="%d" width="%d" height="%d" />' % (x*width, y*height, width, height)
-            return shape
-
-        def Square(dimension):
-            return Rect(dimension, dimension)
-
-        Draw = Square(side)
-
-        for y, yItem in enumerate(data):
-            yield '\t\t<!-- Line: %d -->' % (y)
-
-            for x, xItem in enumerate(yItem):
-                if xItem:
-                    yield Draw(x, y)
-
-            yield ''
-
-        yield '\t</g>'
-
-        yield '</svg>'
-        yield ''
+    yield '</svg>'
+    yield ''
 
 #testing an idea for showing the surrounding padding
 def RollingCollection(items, sampleSize, pad=0, padValue=None):
@@ -302,4 +302,3 @@ if __name__ == '__main__':
     for i in range(4):
         print(next(rgf))
         print()
-
