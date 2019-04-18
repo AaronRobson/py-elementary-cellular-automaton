@@ -117,7 +117,3 @@ class TestRules(unittest.TestCase):
             tuple(islice(
                 eca.RuleGeneratorArrangementsPaddedStrings(self.r30), 3)),
             ('1', ' 1 \n111', '  1  \n 111 \n11001'))
-
-
-if __name__ == '__main__':
-    unittest.main()
