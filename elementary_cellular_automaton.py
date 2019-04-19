@@ -2,6 +2,7 @@ from operator import attrgetter, eq
 from functools import reduce
 from itertools import chain, accumulate
 from collections import OrderedDict
+import argparse
 
 # http://en.wikipedia.org/wiki/Elementary_cellular_automaton
 
@@ -141,7 +142,8 @@ class Settings:
 
 s = Settings()
 
-DEFAULT_RULE = s.RuleFactory(30)
+_DEFAULT_RULE = 30
+DEFAULT_RULE = s.RuleFactory(_DEFAULT_RULE)
 
 ON = True
 OFF = False
@@ -314,32 +316,60 @@ def RollingCollection(items, sampleSize, pad=0, padValue=None):
         yield items[i:i+sampleSize]
 
 
-if __name__ == '__main__':
-    f = RuleGeneratorArrangementsPadded(DEFAULT_RULE)
+def _validate_rule_code(rule):
+    value = int(rule)
+    min = 0
+    max = 0xff
+    if not (0 <= value <= 0xff):
+        raise argparse.ArgumentTypeError(
+            'Rule {} must be between {} and {} inclusive.'.format(
+                value, min, max))
+    return value
 
-    for _ in range(12):
+
+def _make_parser():
+    parser = argparse.ArgumentParser(
+        description='Generate Wolfram elementary cellular automaton patterns.'
+    )
+    parser.add_argument(
+        '-g', '--generations',
+        type=int,
+        default=10,
+        help='Number of generations to run.')
+    parser.add_argument(
+        '-r', '--rule',
+        type=_validate_rule_code,
+        default=_DEFAULT_RULE,
+        help='Which of the Wolfram codes (i.e. rules) to use.')
+    parser.add_argument(
+        '-o', '--output',
+        help='Where to output the SVG to; if unspecified, '
+        'the output will be shown on screen.')
+    return parser
+
+
+if __name__ == '__main__':
+    parser = _make_parser()
+    settings = parser.parse_args()
+
+    rule_func = s.RuleFactory(settings.rule)
+    f = RuleGeneratorArrangementsPadded(rule_func)
+
+    for _ in range(settings.generations):
         lastArrangement = next(f)
 
-    svg = '\n'.join(ToSVG(lastArrangement))
-    print(svg)
-
-    save = True
-    if save:
-        filename = 'ZZZ.svg'
-        with open(filename, 'w') as f:
+    if settings.output is None:
+        # print(rule_func.__name__)
+        rgf = RuleGeneratorArrangementsPaddedStrings(rule_func)
+        for i in range(settings.generations):
+            pattern = next(rgf)
+        print(pattern)
+    else:
+        svg = '\n'.join(ToSVG(lastArrangement))
+        with open(settings.output, 'w') as f:
             f.write(svg)
 
     '''
     for f in s.AllRuleFuncs():
-        print(f)
+        print(f.__name__)
     '''
-
-    print(s)
-    print(DEFAULT_RULE.__name__)
-
-    ######################
-
-    rgf = RuleGeneratorArrangementsPaddedStrings(DEFAULT_RULE)
-    for i in range(4):
-        print(next(rgf))
-        print()
