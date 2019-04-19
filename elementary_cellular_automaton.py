@@ -25,14 +25,14 @@ def width_at_given_generation(generation):
 
 
 class Settings:
-    def __init__(self, choices=2, neighbourhoodScope=1):
+    def __init__(self):
         self._settableAttributeNames = (
             'choices',
             'neighbourhoodScope',
         )
 
-        self.choices = choices
-        self.neighbourhoodScope = neighbourhoodScope
+        self.choices = len([False, True])
+        self.neighbourhoodScope = 1
 
     @property
     def values(self):
