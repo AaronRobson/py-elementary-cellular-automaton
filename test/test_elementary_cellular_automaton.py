@@ -156,5 +156,4 @@ class TestToSVG(unittest.TestCase):
             '',
         ])
         actual = '\n'.join(eca.ToSVG(data=GIVEN_DATA))
-        print(actual)
         self.assertEqual(actual, expected)
