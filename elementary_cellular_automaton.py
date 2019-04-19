@@ -14,6 +14,15 @@ def BoolCollectionToInt(boolCollection):
     return int(BoolCollectionToBase2Str(boolCollection), 2)
 
 
+def width_at_given_generation(generation):
+    generation = int(generation)
+
+    if generation < 0:
+        raise ValueError('A negative generation is not allowed.')
+
+    return generation*2 + 1
+
+
 class Settings:
     def __init__(self, choices=2, neighbourhoodScope=1):
         self._settableAttributeNames = (
@@ -88,14 +97,6 @@ class Settings:
         '''http://en.wikipedia.org/wiki/Wolfram_code
         '''
         return numRule in self.wolframCodes
-
-    def WidthAtGivenGeneration(self, generation):
-        generation = int(generation)
-
-        if generation < 0:
-            raise ValueError('A negative generation is not allowed.')
-
-        return generation*2 + 1
 
     def IntToNeighbours(self, intNeighbours):
         assert intNeighbours in self.neighhbourHoodConfigurationIndexes
@@ -252,7 +253,7 @@ def ToSVG(data, side=10, foreground='#FFFFFF', background='#000000'):
     data = tuple(data)
     lineCount = len(data)
     generation = lineCount-1
-    width = s.WidthAtGivenGeneration(generation) * side
+    width = width_at_given_generation(generation) * side
     height = lineCount * side
 
     yield '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'

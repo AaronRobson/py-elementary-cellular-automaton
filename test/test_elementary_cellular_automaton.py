@@ -6,6 +6,11 @@ from itertools import islice
 import elementary_cellular_automaton as eca
 
 
+class TestWidthAtGivenGeneration(unittest.TestCase):
+    def test(self):
+        self.assertEqual(eca.width_at_given_generation(2), 5)
+
+
 class TestRulesSettings(unittest.TestCase):
     def setUp(self):
         self.s = eca.Settings()
@@ -25,8 +30,6 @@ class TestRulesSettings(unittest.TestCase):
         self.assertEqual(
             len(tuple(self.s.wolframCodes)),
             self.s.numOfWolframCodes)
-
-        self.assertEqual(self.s.WidthAtGivenGeneration(2), 5)
 
     def testCopying(self):
         obj = self.s
