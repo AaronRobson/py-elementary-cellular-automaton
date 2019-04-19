@@ -11,31 +11,26 @@ class TestWidthAtGivenGeneration(unittest.TestCase):
 
 
 class TestRulesSettings(unittest.TestCase):
-    def setUp(self):
-        self.s = eca.Settings()
-
     def testSettingsExpected(self):
-        self.assertEqual(self.s.IndexToNum(0), 1)
-        self.assertEqual(self.s.IndexToNum(7), 128)
+        self.assertEqual(eca.index_to_num(0), 1)
+        self.assertEqual(eca.index_to_num(7), 128)
 
-        self.assertEqual(self.s.numNeighhbourHoodConfigurations, 8)
+        self.assertEqual(eca._NUM_NEIGHBOURHOOD_CONFIGURATIONS, 8)
 
-        self.assertEqual(self.s.highWolframCode, 255)
-
-        self.assertEqual(
-            len(tuple(self.s.neighhbourHoodConfigurations)),
-            self.s.numNeighhbourHoodConfigurations)
+        self.assertEqual(eca.HIGH_WOLFRAM_CODE, 255)
 
         self.assertEqual(
-            len(tuple(self.s.wolframCodes)),
-            self.s.numOfWolframCodes)
+            len(tuple(eca.NEIGHBOURHOOD_CONFIGURATIONS)),
+            eca._NUM_NEIGHBOURHOOD_CONFIGURATIONS)
+
+        self.assertEqual(
+            len(eca.WOLFRAM_CODES),
+            eca.NUM_OF_WOLFRAM_CODES)
 
 
 class TestRules(unittest.TestCase):
     def setUp(self):
-        self.s = eca.Settings()
-        self.r30 = eca.s.RuleFactory(30)
-        self.STARTING_POINT = eca.STARTING_POINT
+        self.r30 = eca.rule_factory(30)
 
     def testBoolCollectionToBase2Str(self):
         self.assertEqual(
@@ -48,14 +43,14 @@ class TestRules(unittest.TestCase):
         self.assertEqual(eca.BoolCollectionToInt((1, 0, 1)), 5)
 
     def testNeighboursToInt(self):
-        self.assertEqual(eca.s.NeighboursToInt((True, False, True)), 5)
+        self.assertEqual(eca.neighbours_to_int((True, False, True)), 5)
 
     def testIntToNeighbours(self):
-        self.assertEqual(tuple(eca.s.IntToNeighbours(5)), (True, False, True))
+        self.assertEqual(tuple(eca.int_to_neighbours(5)), (True, False, True))
 
     def testR30(self):
         self.assertEqual(
-            tuple(map(self.r30, self.s.neighhbourHoods)),
+            tuple(map(self.r30, eca.NEIGHBOURHOODS)),
             (False, False, False, True, True, True, True, False))
 
     def testNextLineSpecifyRule(self):
@@ -66,7 +61,7 @@ class TestRules(unittest.TestCase):
     def testNextLineFactory(self):
         nifunc = eca.NextLineFactory(self.r30)
 
-        secondLine = tuple(nifunc(self.STARTING_POINT))
+        secondLine = tuple(nifunc(eca.STARTING_POINT))
         self.assertEqual(secondLine, (True, True, True))
 
         thirdLine = tuple(nifunc(secondLine))

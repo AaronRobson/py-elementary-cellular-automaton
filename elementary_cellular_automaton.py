@@ -26,95 +26,81 @@ _NUMBER_OF_CHOICES = len(_CHOICES)
 
 _NEIGHBOURHOOD_SCOPE = 1
 _NEIGHBOURHOOD_SIZE = _NEIGHBOURHOOD_SCOPE*2 + 1
+_NUM_NEIGHBOURHOOD_CONFIGURATIONS = _NUMBER_OF_CHOICES**_NEIGHBOURHOOD_SIZE
+_NEIGHBOURHOOD_CONFIGURATION_INDEXES = tuple(
+    range(_NUM_NEIGHBOURHOOD_CONFIGURATIONS-1, 0-1, -1))
 
 
-class Settings:
-    @property
-    def numNeighhbourHoodConfigurations(self):
-        return _NUMBER_OF_CHOICES**_NEIGHBOURHOOD_SIZE
-
-    @property
-    def neighhbourHoodConfigurationIndexes(self):
-        return range(s.numNeighhbourHoodConfigurations-1, 0-1, -1)
-
-    @property
-    def neighhbourHoodConfigurations(self):
-        return map(self.IndexToNum, self.neighhbourHoodConfigurationIndexes)
-
-    @property
-    def neighhbourHoods(self):
-        return map(self.IntToNeighbours,
-                   self.neighhbourHoodConfigurationIndexes)
-
-    @property
-    def numOfWolframCodes(self):
-        return _NUMBER_OF_CHOICES**self.numNeighhbourHoodConfigurations
-
-    @property
-    def lowWolframCode(self):
-        return 0
-
-    @property
-    def highWolframCode(self):
-        return self.numOfWolframCodes - 1
-
-    @property
-    def wolframCodes(self):
-        return range(self.lowWolframCode, self.numOfWolframCodes)
-
-    def IndexToNum(self, index):
-        return _NUMBER_OF_CHOICES**index
-
-    def IsWolframCodeValid(self, numRule):
-        '''http://en.wikipedia.org/wiki/Wolfram_code
-        '''
-        return numRule in self.wolframCodes
-
-    def IntToNeighbours(self, intNeighbours):
-        assert intNeighbours in self.neighhbourHoodConfigurationIndexes
-        # bin assumes two choices
-        return (bool(int(b)) for b in bin(intNeighbours)[2:])
-
-    def NeighboursToInt(self, neighbours):
-        neighbours = tuple(neighbours)
-        assert len(neighbours) <= _NEIGHBOURHOOD_SIZE
-
-        assert _NUMBER_OF_CHOICES == 2  # Bool assumed.
-        base2Str = BoolCollectionToBase2Str(neighbours)
-        return int(base2Str, _NUMBER_OF_CHOICES)
-
-    def RuleCalc(self, neighbours, wolframCode):
-        assert self.IsWolframCodeValid(wolframCode)
-        neighbourIndex = self.NeighboursToInt(neighbours)
-        assert neighbourIndex in self.neighhbourHoodConfigurationIndexes
-
-        # The real meat of the program.
-        return bool(self.IndexToNum(neighbourIndex) & wolframCode)
-
-    def RuleFactory(self, wolframCode):
-        '''Is checked within RuleCalc itself but here we know as soon as
-        possible that there has been a mistake.
-        '''
-        assert self.IsWolframCodeValid(wolframCode)
-
-        def RuleCalcFixed(neighbours):
-            '''Rule Calc for Rule %d.
-            ''' % (wolframCode)
-            return self.RuleCalc(neighbours, wolframCode)
-
-        RuleCalcFixed.__name__ = 'Rule %d' % (wolframCode)
-        RuleCalcFixed.wolframCode = wolframCode
-
-        return RuleCalcFixed
-
-    def AllRuleFuncs(self):
-        return map(self.RuleFactory, self.wolframCodes)
+def index_to_num(index):
+    return _NUMBER_OF_CHOICES**index
 
 
-s = Settings()
+def int_to_neighbours(intNeighbours):
+    assert intNeighbours in _NEIGHBOURHOOD_CONFIGURATION_INDEXES
+    # bin assumes two choices
+    return (bool(int(b)) for b in bin(intNeighbours)[2:])
+
+
+def neighbours_to_int(neighbours):
+    neighbours = tuple(neighbours)
+    assert len(neighbours) <= _NEIGHBOURHOOD_SIZE
+    assert _NUMBER_OF_CHOICES == 2  # Bool assumed.
+    base2Str = BoolCollectionToBase2Str(neighbours)
+    return int(base2Str, _NUMBER_OF_CHOICES)
+
+
+NEIGHBOURHOOD_CONFIGURATIONS = tuple(
+    map(index_to_num, _NEIGHBOURHOOD_CONFIGURATION_INDEXES))
+
+NEIGHBOURHOODS = tuple(
+    map(int_to_neighbours, _NEIGHBOURHOOD_CONFIGURATION_INDEXES))
+
+NUM_OF_WOLFRAM_CODES = _NUMBER_OF_CHOICES**_NUM_NEIGHBOURHOOD_CONFIGURATIONS
+LOW_WOLFRAM_CODE = 0
+HIGH_WOLFRAM_CODE = NUM_OF_WOLFRAM_CODES - 1
+
+WOLFRAM_CODES = tuple(
+    range(LOW_WOLFRAM_CODE, NUM_OF_WOLFRAM_CODES))
+
+
+def is_wolfram_code_valid(numRule):
+    '''http://en.wikipedia.org/wiki/Wolfram_code
+    '''
+    return numRule in WOLFRAM_CODES
+
+
+def rule_calc(neighbours, wolframCode):
+    assert is_wolfram_code_valid(wolframCode)
+    neighbourIndex = neighbours_to_int(neighbours)
+    assert neighbourIndex in _NEIGHBOURHOOD_CONFIGURATION_INDEXES
+
+    # The real meat of the program.
+    return bool(index_to_num(neighbourIndex) & wolframCode)
+
+
+def rule_factory(wolframCode):
+    '''Is checked within RuleCalc itself but here we know as soon as
+    possible that there has been a mistake.
+    '''
+    assert is_wolfram_code_valid(wolframCode)
+
+    def RuleCalcFixed(neighbours):
+        '''Rule Calc for Rule %d.
+        ''' % (wolframCode)
+        return rule_calc(neighbours, wolframCode)
+
+    RuleCalcFixed.__name__ = 'Rule %d' % (wolframCode)
+    RuleCalcFixed.wolframCode = wolframCode
+
+    return RuleCalcFixed
+
+
+def AllRuleFuncs():
+    return map(rule_factory, WOLFRAM_CODES)
+
 
 _DEFAULT_RULE = 30
-DEFAULT_RULE = s.RuleFactory(_DEFAULT_RULE)
+DEFAULT_RULE = rule_factory(_DEFAULT_RULE)
 
 ON = True
 OFF = False
@@ -323,7 +309,7 @@ if __name__ == '__main__':
     parser = _make_parser()
     settings = parser.parse_args()
 
-    rule_func = s.RuleFactory(settings.rule)
+    rule_func = rule_factory(settings.rule)
     f = RuleGeneratorArrangementsPadded(rule_func)
 
     for _ in range(settings.generations):
