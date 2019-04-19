@@ -92,7 +92,7 @@ class TestRules(unittest.TestCase):
         self.assertEqual(
             tuple(islice(
                 eca.RuleGeneratorArrangementsPaddedStrings(self.r30), 3)),
-            ('1', '010\n111', '00100\n01110\n11001'))
+            ('#', ' # \n###', '  #  \n ### \n##  #'))
 
 
 class TestToSVG(unittest.TestCase):

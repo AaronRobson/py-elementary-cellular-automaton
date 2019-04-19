@@ -105,8 +105,8 @@ ON = True
 OFF = False
 
 _symbolchar = {
-    ON: '1',
-    OFF: '0',
+    ON: '#',
+    OFF: ' ',
 }
 
 for value in _symbolchar.values():
