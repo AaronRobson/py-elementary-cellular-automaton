@@ -25,16 +25,13 @@ _CHOICES = [False, True]
 _NUMBER_OF_CHOICES = len(_CHOICES)
 
 _NEIGHBOURHOOD_SCOPE = 1
+_NEIGHBOURHOOD_SIZE = _NEIGHBOURHOOD_SCOPE*2 + 1
 
 
 class Settings:
     @property
-    def neighbourhoodSize(self):
-        return _NEIGHBOURHOOD_SCOPE*2 + 1
-
-    @property
     def numNeighhbourHoodConfigurations(self):
-        return _NUMBER_OF_CHOICES**self.neighbourhoodSize
+        return _NUMBER_OF_CHOICES**_NEIGHBOURHOOD_SIZE
 
     @property
     def neighhbourHoodConfigurationIndexes(self):
@@ -80,7 +77,7 @@ class Settings:
 
     def NeighboursToInt(self, neighbours):
         neighbours = tuple(neighbours)
-        assert len(neighbours) <= self.neighbourhoodSize
+        assert len(neighbours) <= _NEIGHBOURHOOD_SIZE
 
         assert _NUMBER_OF_CHOICES == 2  # Bool assumed.
         base2Str = BoolCollectionToBase2Str(neighbours)
@@ -179,7 +176,7 @@ STARTING_POINT = (ON,)
 
 def NextLineSpecifyRule(rule, currentLine):
     preparedLine = CentreSymbols(currentLine, _NEIGHBOURHOOD_SCOPE * 2, OFF)
-    return map(rule, RollingCollection(preparedLine, s.neighbourhoodSize))
+    return map(rule, RollingCollection(preparedLine, _NEIGHBOURHOOD_SIZE))
 
 
 def NextLineFactory(rule):
