@@ -120,3 +120,41 @@ class TestRules(unittest.TestCase):
             tuple(islice(
                 eca.RuleGeneratorArrangementsPaddedStrings(self.r30), 3)),
             ('1', ' 1 \n111', '  1  \n 111 \n11001'))
+
+
+class TestToSVG(unittest.TestCase):
+    def test(self):
+        GIVEN_DATA = (
+            (None, None, True, None, None),
+            (None, True, True, True, None),
+            (True, True, False, False, True)
+        )
+        expected = '\n'.join([
+            '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
+            '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" '
+            '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
+            '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" '
+            'width="50px" height="30px">',
+            '\t<rect width="50" height="30" fill="#000000" />',
+            '',
+            '\t<g fill="#FFFFFF">',
+            '\t\t<!-- Line: 0 -->',
+            '\t\t<rect x="20" y="0" width="10" height="10" />',
+            '',
+            '\t\t<!-- Line: 1 -->',
+            '\t\t<rect x="10" y="10" width="10" height="10" />',
+            '\t\t<rect x="20" y="10" width="10" height="10" />',
+            '\t\t<rect x="30" y="10" width="10" height="10" />',
+            '',
+            '\t\t<!-- Line: 2 -->',
+            '\t\t<rect x="0" y="20" width="10" height="10" />',
+            '\t\t<rect x="10" y="20" width="10" height="10" />',
+            '\t\t<rect x="40" y="20" width="10" height="10" />',
+            '',
+            '\t</g>',
+            '</svg>',
+            '',
+        ])
+        actual = '\n'.join(eca.ToSVG(data=GIVEN_DATA))
+        print(actual)
+        self.assertEqual(actual, expected)
