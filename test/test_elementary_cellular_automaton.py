@@ -31,6 +31,7 @@ class TestRulesSettings(unittest.TestCase):
 class TestRules(unittest.TestCase):
     def setUp(self):
         self.r30 = eca.rule_factory(30)
+        self.r1 = eca.rule_factory(1)
 
     def testBoolCollectionToBase2Str(self):
         self.assertEqual(
@@ -62,23 +63,26 @@ class TestRules(unittest.TestCase):
         nifunc = eca.NextLineFactory(self.r30)
 
         secondLine = tuple(nifunc(eca.STARTING_POINT))
-        self.assertEqual(secondLine, (True, True, True))
+        self.assertEqual(secondLine, (False, True, True, True, False))
 
         thirdLine = tuple(nifunc(secondLine))
-        self.assertEqual(thirdLine, (True, True, False, False, True))
+        self.assertEqual(
+            thirdLine,
+            (False, True, True, False, False, True, False))
 
     def testRuleGeneratorFullPadded(self):
         arrangements = (
             (
-                (True,),
-            ),
-            (
                 (False, True, False),
-                (True, True, True)),
+            ),
             (
                 (False, False, True, False, False),
                 (False, True, True, True, False),
-                (True, True, False, False, True),
+            ),
+            (
+                (False, False, False, True, False, False, False),
+                (False, False, True, True, True, False, False),
+                (False, True, True, False, False, True, False),
             ),
         )
 
@@ -92,15 +96,33 @@ class TestRules(unittest.TestCase):
         self.assertEqual(
             tuple(islice(
                 eca.RuleGeneratorArrangementsPaddedStrings(self.r30), 3)),
-            ('#', ' # \n###', '  #  \n ### \n##  #'))
+            (' # ', '  #  \n ### ', '   #   \n  ###  \n ##  # '))
+
+    def testRule1(self):
+        nifunc = eca.NextLineFactory(self.r1)
+
+        secondLine = tuple(nifunc(eca.STARTING_POINT))
+        self.assertEqual(
+            secondLine,
+            (True, False, False, False, True))
+
+        thirdLine = tuple(nifunc(secondLine))
+        self.assertEqual(
+            thirdLine,
+            (False, False, False, True, False, False, False))
+
+        fourthLine = tuple(nifunc(thirdLine))
+        self.assertEqual(
+            fourthLine,
+            (True, True, True, False, False, False, True, True, True))
 
 
 class TestToSVG(unittest.TestCase):
     def test(self):
         GIVEN_DATA = (
-            (False, False, True, False, False),
-            (False, True, True, True, False),
-            (True, True, False, False, True)
+            (False, False, False, True, False, False, False),
+            (False, False, True, True, True, False, False),
+            (False, True, True, False, False, True, False)
         )
         expected = '\n'.join([
             '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
@@ -112,17 +134,17 @@ class TestToSVG(unittest.TestCase):
             '',
             '\t<g fill="#000000">',
             '\t\t<!-- Line: 0 -->',
-            '\t\t<rect x="20" y="0" width="10" height="10" />',
+            '\t\t<rect x="30" y="0" width="10" height="10" />',
             '',
             '\t\t<!-- Line: 1 -->',
-            '\t\t<rect x="10" y="10" width="10" height="10" />',
             '\t\t<rect x="20" y="10" width="10" height="10" />',
             '\t\t<rect x="30" y="10" width="10" height="10" />',
+            '\t\t<rect x="40" y="10" width="10" height="10" />',
             '',
             '\t\t<!-- Line: 2 -->',
-            '\t\t<rect x="0" y="20" width="10" height="10" />',
             '\t\t<rect x="10" y="20" width="10" height="10" />',
-            '\t\t<rect x="40" y="20" width="10" height="10" />',
+            '\t\t<rect x="20" y="20" width="10" height="10" />',
+            '\t\t<rect x="50" y="20" width="10" height="10" />',
             '',
             '\t</g>',
             '</svg>',

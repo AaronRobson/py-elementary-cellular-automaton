@@ -154,7 +154,7 @@ def CentreSymbols(line, paddingEachSide=1, padWith=OFF):
     return chain(pad, line, pad)
 
 
-STARTING_POINT = (ON,)
+STARTING_POINT = (OFF, ON, OFF)
 
 
 def NextLineSpecifyRule(rule, currentLine):
