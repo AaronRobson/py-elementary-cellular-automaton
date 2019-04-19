@@ -1,5 +1,4 @@
 import unittest
-from copy import copy
 
 from itertools import islice
 
@@ -30,27 +29,6 @@ class TestRulesSettings(unittest.TestCase):
         self.assertEqual(
             len(tuple(self.s.wolframCodes)),
             self.s.numOfWolframCodes)
-
-    def testCopying(self):
-        obj = self.s
-        a = copy(obj)
-        b = copy(a)
-
-        self.assertEqual(a, b)
-        self.assertEqual(repr(a), repr(b))
-
-        origChoice = a.choices
-        a.choices = 5
-        self.assertNotEqual(a, b)
-        self.assertNotEqual(repr(a), repr(b))
-
-        a.choices = origChoice
-        self.assertEqual(a, b)
-        self.assertEqual(repr(a), repr(b))
-
-        a.neighbourhoodScope = 6
-        self.assertNotEqual(a, b)
-        self.assertNotEqual(repr(a), repr(b))
 
 
 class TestRules(unittest.TestCase):

@@ -1,7 +1,4 @@
-from operator import attrgetter, eq
-from functools import reduce
 from itertools import chain, accumulate
-from collections import OrderedDict
 import argparse
 
 # http://en.wikipedia.org/wiki/Elementary_cellular_automaton
@@ -24,43 +21,20 @@ def width_at_given_generation(generation):
     return generation*2 + 1
 
 
+_CHOICES = [False, True]
+_NUMBER_OF_CHOICES = len(_CHOICES)
+
+_NEIGHBOURHOOD_SCOPE = 1
+
+
 class Settings:
-    def __init__(self):
-        self._settableAttributeNames = (
-            'choices',
-            'neighbourhoodScope',
-        )
-
-        self.choices = len([False, True])
-        self.neighbourhoodScope = 1
-
-    @property
-    def values(self):
-        return OrderedDict((name, attrgetter(name)(self))
-                           for name in self._settableAttributeNames)
-
-    def __repr__(self):
-        return '%s(%s)' % (__class__.__name__,
-                           ', '.join('%s=%d' % (k, v)
-                                     for k, v in self.values.items()))
-
-    def __eq__(self, other):
-        if not isinstance(other, __class__):
-            # If sub-classing even happens, then this will have to revisited.
-            return False
-
-        objects = self, other
-        getter = attrgetter('values')
-        values = map(getter, objects)
-        return reduce(eq, values)
-
     @property
     def neighbourhoodSize(self):
-        return self.neighbourhoodScope*2 + 1
+        return _NEIGHBOURHOOD_SCOPE*2 + 1
 
     @property
     def numNeighhbourHoodConfigurations(self):
-        return self.choices**self.neighbourhoodSize
+        return _NUMBER_OF_CHOICES**self.neighbourhoodSize
 
     @property
     def neighhbourHoodConfigurationIndexes(self):
@@ -77,7 +51,7 @@ class Settings:
 
     @property
     def numOfWolframCodes(self):
-        return self.choices**self.numNeighhbourHoodConfigurations
+        return _NUMBER_OF_CHOICES**self.numNeighhbourHoodConfigurations
 
     @property
     def lowWolframCode(self):
@@ -92,7 +66,7 @@ class Settings:
         return range(self.lowWolframCode, self.numOfWolframCodes)
 
     def IndexToNum(self, index):
-        return self.choices**index
+        return _NUMBER_OF_CHOICES**index
 
     def IsWolframCodeValid(self, numRule):
         '''http://en.wikipedia.org/wiki/Wolfram_code
@@ -108,9 +82,9 @@ class Settings:
         neighbours = tuple(neighbours)
         assert len(neighbours) <= self.neighbourhoodSize
 
-        assert s.choices == 2  # Bool assumed.
+        assert _NUMBER_OF_CHOICES == 2  # Bool assumed.
         base2Str = BoolCollectionToBase2Str(neighbours)
-        return int(base2Str, s.choices)
+        return int(base2Str, _NUMBER_OF_CHOICES)
 
     def RuleCalc(self, neighbours, wolframCode):
         assert self.IsWolframCodeValid(wolframCode)
@@ -204,7 +178,7 @@ STARTING_POINT = (ON,)
 
 
 def NextLineSpecifyRule(rule, currentLine):
-    preparedLine = CentreSymbols(currentLine, s.neighbourhoodScope * 2, OFF)
+    preparedLine = CentreSymbols(currentLine, _NEIGHBOURHOOD_SCOPE * 2, OFF)
     return map(rule, RollingCollection(preparedLine, s.neighbourhoodSize))
 
 
