@@ -103,12 +103,10 @@ DEFAULT_RULE = rule_factory(_DEFAULT_RULE)
 
 ON = True
 OFF = False
-OUT = None
 
 _symbolchar = {
     ON: '1',
     OFF: '0',
-    OUT: ' ',
 }
 
 for value in _symbolchar.values():
@@ -151,7 +149,7 @@ def SymbolsToString(symbols):
     return ''.join(SymbolsToChars(symbols))
 
 
-def CentreSymbols(line, paddingEachSide=1, padWith=OUT):
+def CentreSymbols(line, paddingEachSide=1, padWith=OFF):
     pad = (padWith,) * paddingEachSide
     return chain(pad, line, pad)
 

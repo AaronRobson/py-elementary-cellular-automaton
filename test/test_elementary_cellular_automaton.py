@@ -34,12 +34,12 @@ class TestRules(unittest.TestCase):
 
     def testBoolCollectionToBase2Str(self):
         self.assertEqual(
-            eca.BoolCollectionToBase2Str((True, False, None)),
+            eca.BoolCollectionToBase2Str((True, False, False)),
             '100')
         self.assertEqual(eca.BoolCollectionToBase2Str((1, 0, 1)), '101')
 
     def testBoolCollectionToInt(self):
-        self.assertEqual(eca.BoolCollectionToInt((True, False, None)), 4)
+        self.assertEqual(eca.BoolCollectionToInt((True, False, False)), 4)
         self.assertEqual(eca.BoolCollectionToInt((1, 0, 1)), 5)
 
     def testNeighboursToInt(self):
@@ -73,11 +73,11 @@ class TestRules(unittest.TestCase):
                 (True,),
             ),
             (
-                (None, True, None),
+                (False, True, False),
                 (True, True, True)),
             (
-                (None, None, True, None, None),
-                (None, True, True, True, None),
+                (False, False, True, False, False),
+                (False, True, True, True, False),
                 (True, True, False, False, True),
             ),
         )
@@ -92,14 +92,14 @@ class TestRules(unittest.TestCase):
         self.assertEqual(
             tuple(islice(
                 eca.RuleGeneratorArrangementsPaddedStrings(self.r30), 3)),
-            ('1', ' 1 \n111', '  1  \n 111 \n11001'))
+            ('1', '010\n111', '00100\n01110\n11001'))
 
 
 class TestToSVG(unittest.TestCase):
     def test(self):
         GIVEN_DATA = (
-            (None, None, True, None, None),
-            (None, True, True, True, None),
+            (False, False, True, False, False),
+            (False, True, True, True, False),
             (True, True, False, False, True)
         )
         expected = '\n'.join([
