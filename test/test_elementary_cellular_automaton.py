@@ -128,5 +128,6 @@ class TestToSVG(unittest.TestCase):
             '</svg>',
             '',
         ])
+        self.maxDiff = None
         actual = '\n'.join(eca.ToSVG(data=GIVEN_DATA))
         self.assertEqual(actual, expected)

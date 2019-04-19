@@ -85,11 +85,10 @@ def rule_factory(wolframCode):
     assert is_wolfram_code_valid(wolframCode)
 
     def RuleCalcFixed(neighbours):
-        '''Rule Calc for Rule %d.
-        ''' % (wolframCode)
+        f'''Rule Calc for Rule {wolframCode}.'''
         return rule_calc(neighbours, wolframCode)
 
-    RuleCalcFixed.__name__ = 'Rule %d' % (wolframCode)
+    RuleCalcFixed.__name__ = f'Rule {wolframCode}'
     RuleCalcFixed.wolframCode = wolframCode
 
     return RuleCalcFixed
@@ -219,21 +218,17 @@ def ToSVG(data, side=10, foreground='#FFFFFF', background='#000000'):
     yield '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" ' \
         '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
     yield '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" ' \
-        'width="%dpx" height="%dpx">' % (width, height)
-    yield '\t<rect width="%d" height="%d" fill="%s" />' % (
-        width, height, background)
-    '''
-    yield '\t<!-- Rule %s, Generation: %d, Side: %d -->' % (
-        self.wolframCode, generation, side)
-    '''
+        f'width="{width}px" height="{height}px">'
+    yield f'\t<rect width="{width}" height="{height}" fill="{background}" />'
     yield ''
-
-    yield '\t<g fill="%s">' % (foreground)
+    yield f'\t<g fill="{foreground}">'
 
     def Rect(width, height):
         def shape(x, y):
-            return '\t\t<rect x="%d" y="%d" width="%d" height="%d" />' % (
-                x*width, y*height, width, height)
+            xScaled = x*width
+            yScaled = y*height
+            return f'\t\t<rect x="{xScaled}" y="{yScaled}" ' + \
+                f'width="{width}" height="{height}" />'
         return shape
 
     def Square(dimension):
@@ -242,7 +237,7 @@ def ToSVG(data, side=10, foreground='#FFFFFF', background='#000000'):
     Draw = Square(side)
 
     for y, yItem in enumerate(data):
-        yield '\t\t<!-- Line: %d -->' % (y)
+        yield f'\t\t<!-- Line: {y} -->'
 
         for x, xItem in enumerate(yItem):
             if xItem:
@@ -279,8 +274,7 @@ def _validate_rule_code(rule):
     max = 0xff
     if not (0 <= value <= 0xff):
         raise argparse.ArgumentTypeError(
-            'Rule {} must be between {} and {} inclusive.'.format(
-                value, min, max))
+            f'Rule {value} must be between {min} and {max} inclusive.')
     return value
 
 
@@ -294,13 +288,13 @@ def _make_parser():
         type=int,
         default=DEFAULT_GENERATIONS,
         help='Number of generations (i.e. interations) to run '
-        '(default: {}).'.format(DEFAULT_GENERATIONS))
+        f'(default: {DEFAULT_GENERATIONS}).')
     parser.add_argument(
         '-r', '--rule',
         type=_validate_rule_code,
         default=_DEFAULT_RULE,
         help='Which of the Wolfram codes (i.e. rules) to use '
-        '(default: {}).'.format(_DEFAULT_RULE))
+        f'(default: {_DEFAULT_RULE}).')
     parser.add_argument(
         '-o', '--output',
         metavar='FILE',
