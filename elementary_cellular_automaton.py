@@ -285,21 +285,25 @@ def _validate_rule_code(rule):
 
 
 def _make_parser():
+    DEFAULT_GENERATIONS = 10
     parser = argparse.ArgumentParser(
         description='Generate Wolfram elementary cellular automaton patterns.'
     )
     parser.add_argument(
         '-g', '--generations',
         type=int,
-        default=10,
-        help='Number of generations to run.')
+        default=DEFAULT_GENERATIONS,
+        help='Number of generations (i.e. interations) to run '
+        '(default: {}).'.format(DEFAULT_GENERATIONS))
     parser.add_argument(
         '-r', '--rule',
         type=_validate_rule_code,
         default=_DEFAULT_RULE,
-        help='Which of the Wolfram codes (i.e. rules) to use.')
+        help='Which of the Wolfram codes (i.e. rules) to use '
+        '(default: {}).'.format(_DEFAULT_RULE))
     parser.add_argument(
         '-o', '--output',
+        metavar='FILE',
         help='Where to output the SVG to; if unspecified, '
         'the output will be shown on screen.')
     return parser
