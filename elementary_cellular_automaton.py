@@ -202,7 +202,7 @@ def RuleGeneratorArrangementsPaddedStrings(*args, **kwargs):
         yield '\n'.join(map(SymbolsToString, arrangement))
 
 
-def ToSVG(data, side=10, foreground='#FFFFFF', background='#000000'):
+def ToSVG(data, side=10, foreground='#000000', background='#ffffff'):
     side = int(side)
     if side <= 0:
         raise ValueError('Only strictly positive whole numbers shall '

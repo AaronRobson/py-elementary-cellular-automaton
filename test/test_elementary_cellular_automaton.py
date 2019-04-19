@@ -108,9 +108,9 @@ class TestToSVG(unittest.TestCase):
             '"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
             '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" '
             'width="50px" height="30px">',
-            '\t<rect width="50" height="30" fill="#000000" />',
+            '\t<rect width="50" height="30" fill="#ffffff" />',
             '',
-            '\t<g fill="#FFFFFF">',
+            '\t<g fill="#000000">',
             '\t\t<!-- Line: 0 -->',
             '\t\t<rect x="20" y="0" width="10" height="10" />',
             '',
