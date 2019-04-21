@@ -141,6 +141,10 @@ class TestFindCoordinates(unittest.TestCase):
 
 
 class TestGrid(unittest.TestCase):
+    '''http://atlas.wolfram.com/01/01/
+    https://blog.stephenwolfram.com/2017/06/oh-my-gosh-its-covered-in-rule-30s/
+    '''
+
     def middle_and_the_one_to_the_left_on_first_line(self, x):
         return x in [-1, 0]
 
@@ -554,6 +558,30 @@ class TestGrid(unittest.TestCase):
                 '##  # # ###',
             ]))
 
+    def test_rule_73(self):
+        self.f(
+            rule=73,
+            expected='\n'.join([
+                '     #     ',
+                '####   ####',
+                '   # # #   ',
+                '##       ##',
+                ' # ##### # ',
+                '   #   #   ',
+            ]))
+
+    def test_rule_89(self):
+        self.f(
+            rule=89,
+            expected='\n'.join([
+                '     #     ',
+                '####  #####',
+                '   ## #    ',
+                '## ##  ####',
+                ' # ### #   ',
+                '   # #  ###',
+            ]))
+
     def test_rule_90(self):
         self.f(
             rule=90,
@@ -606,6 +634,18 @@ class TestGrid(unittest.TestCase):
             ]),
             starting_line=seven_cells_on_first_line)
 
+    def test_rule_135(self):
+        self.f(
+            rule=135,
+            expected='\n'.join([
+                '     #     ',
+                '###### ####',
+                '#####   ###',
+                '####  ## ##',
+                '###  #    #',
+                '##  ## ### ',
+            ]))
+
     def test_rule_137(self):
         self.f(
             rule=137,
@@ -616,6 +656,30 @@ class TestGrid(unittest.TestCase):
                 '##     ####',
                 '#  ### ####',
                 '   ##  ####',
+            ]))
+
+    def test_rule_182(self):
+        self.f(
+            rule=182,
+            expected='\n'.join([
+                '     #     ',
+                '    ###    ',
+                '   # # #   ',
+                '  #######  ',
+                ' # ##### # ',
+                '### ### ###',
+            ]))
+
+    def test_rule_193(self):
+        self.f(
+            rule=193,
+            expected='\n'.join([
+                '     #     ',
+                '####   ####',
+                '#### #  ###',
+                '####     ##',
+                '#### ###  #',
+                '####  ##   ',
             ]))
 
     def test_rule_225(self):
