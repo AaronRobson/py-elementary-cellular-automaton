@@ -78,12 +78,9 @@ def ensureWolframCodeIsValid(wolframCode):
 
 _DEFAULT_RULE = 30
 
-ON = True
-OFF = False
-
 _symbolchar = {
-    ON: '#',
-    OFF: ' ',
+    True: '#',
+    False: ' ',
 }
 
 for value in _symbolchar.values():
