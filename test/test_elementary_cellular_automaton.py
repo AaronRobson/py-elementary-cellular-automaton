@@ -1,7 +1,5 @@
 import unittest
 
-from itertools import islice
-
 import elementary_cellular_automaton as eca
 
 
@@ -79,7 +77,7 @@ class TestFindCellValue(unittest.TestCase):
         self.assertFalse(eca.find_cell_value(x=123, y=2, rule=3))
 
     def test_rule30(self):
-        #first line
+        # first line
         self.assertFalse(eca.find_cell_value(x=-1, y=0, rule=30))
         self.assertTrue(eca.find_cell_value(x=0, y=0, rule=30))
         self.assertFalse(eca.find_cell_value(x=1, y=0, rule=30))
@@ -143,8 +141,8 @@ class TestFindCoordinates(unittest.TestCase):
 
 
 class TestGrid(unittest.TestCase):
-    def setUp(self):
-        self.middle_and_the_one_to_the_left_on_first_line = lambda x: x in [-1, 0]
+    def middle_and_the_one_to_the_left_on_first_line(self, x):
+        return x in [-1, 0]
 
     def f(self, rule, expected, starting_line=None):
         actual = eca.grid_to_text(
@@ -156,463 +154,557 @@ class TestGrid(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_rule_0(self):
-        self.f(rule=0, expected='\n'.join([
-            '     #     ',
-            '           ',
-            '           ',
-            '           ',
-            '           ',
-            '           ',
-        ]))
+        self.f(
+            rule=0,
+            expected='\n'.join([
+                '     #     ',
+                '           ',
+                '           ',
+                '           ',
+                '           ',
+                '           ',
+            ]))
 
     def test_rule_1(self):
-        self.f(rule=1, expected='\n'.join([
-            '     #     ',
-            '####   ####',
-            '     #     ',
-            '####   ####',
-            '     #     ',
-            '####   ####',
-        ]))
+        self.f(
+            rule=1,
+            expected='\n'.join([
+                '     #     ',
+                '####   ####',
+                '     #     ',
+                '####   ####',
+                '     #     ',
+                '####   ####',
+            ]))
 
     def test_rule_2(self):
-        self.f(rule=2, expected='\n'.join([
-            '     #     ',
-            '    #      ',
-            '   #       ',
-            '  #        ',
-            ' #         ',
-            '#          ',
-        ]))
+        self.f(
+            rule=2,
+            expected='\n'.join([
+                '     #     ',
+                '    #      ',
+                '   #       ',
+                '  #        ',
+                ' #         ',
+                '#          ',
+            ]))
 
     def test_rule_3(self):
-        self.f(rule=3, expected = '\n'.join([
-            '     #     ',
-            '#####  ####',
-            '      #    ',
-            '######  ###',
-            '       #   ',
-            '#######  ##',
-        ]))
+        self.f(
+            rule=3,
+            expected='\n'.join([
+                '     #     ',
+                '#####  ####',
+                '      #    ',
+                '######  ###',
+                '       #   ',
+                '#######  ##',
+            ]))
 
     def test_rule_4(self):
-        self.f(rule=4, expected = '\n'.join([
-            '     #     ',
-            '     #     ',
-            '     #     ',
-            '     #     ',
-            '     #     ',
-            '     #     ',
-        ]))
+        self.f(
+            rule=4,
+            expected='\n'.join([
+                '     #     ',
+                '     #     ',
+                '     #     ',
+                '     #     ',
+                '     #     ',
+                '     #     ',
+            ]))
 
     def test_rule_5(self):
-        self.f(rule=5, expected = '\n'.join([
-            '     #     ',
-            '#### # ####',
-            '     #     ',
-            '#### # ####',
-            '     #     ',
-            '#### # ####',
-        ]))
+        self.f(
+            rule=5,
+            expected='\n'.join([
+                '     #     ',
+                '#### # ####',
+                '     #     ',
+                '#### # ####',
+                '     #     ',
+                '#### # ####',
+            ]))
 
     def test_rule_6(self):
-        self.f(rule=6, expected = '\n'.join([
-            '     #     ',
-            '    ##     ',
-            '   #       ',
-            '  ##       ',
-            ' #         ',
-            '##         ',
-        ]))
+        self.f(
+            rule=6,
+            expected='\n'.join([
+                '     #     ',
+                '    ##     ',
+                '   #       ',
+                '  ##       ',
+                ' #         ',
+                '##         ',
+            ]))
 
     def test_rule_7(self):
-        self.f(rule=7, expected = '\n'.join([
-            '    ##     ',
-            '####   ####',
-            '     ##    ',
-            '#####   ###',
-            '      ##   ',
-            '######   ##',
-        ]),
-        starting_line=self.middle_and_the_one_to_the_left_on_first_line)
+        self.f(
+            rule=7,
+            expected='\n'.join([
+                '    ##     ',
+                '####   ####',
+                '     ##    ',
+                '#####   ###',
+                '      ##   ',
+                '######   ##',
+            ]),
+            starting_line=self.middle_and_the_one_to_the_left_on_first_line)
 
     def test_rule_8(self):
-        self.f(rule=8, expected = '\n'.join([
-            '    ##     ',
-            '    #      ',
-            '           ',
-            '           ',
-            '           ',
-            '           ',
-        ]),
-        starting_line=self.middle_and_the_one_to_the_left_on_first_line)
+        self.f(
+            rule=8,
+            expected='\n'.join([
+                '    ##     ',
+                '    #      ',
+                '           ',
+                '           ',
+                '           ',
+                '           ',
+            ]),
+            starting_line=self.middle_and_the_one_to_the_left_on_first_line)
 
     def test_rule_9(self):
-        self.f(rule=9, expected = '\n'.join([
-            '     #     ',
-            '####   ####',
-            '     # #   ',
-            '####     ##',
-            '     ### # ',
-            '#### #     ',
-        ]))
+        self.f(
+            rule=9,
+            expected='\n'.join([
+                '     #     ',
+                '####   ####',
+                '     # #   ',
+                '####     ##',
+                '     ### # ',
+                '#### #     ',
+            ]))
 
     def test_rule_10(self):
-        self.f(rule=10, expected = '\n'.join([
-            '     #     ',
-            '    #      ',
-            '   #       ',
-            '  #        ',
-            ' #         ',
-            '#          ',
-        ]))
+        self.f(
+            rule=10,
+            expected='\n'.join([
+                '     #     ',
+                '    #      ',
+                '   #       ',
+                '  #        ',
+                ' #         ',
+                '#          ',
+            ]))
 
     def test_rule_11(self):
-        self.f(rule=11, expected = '\n'.join([
-            '     #     ',
-            '#####  ####',
-            '      ##   ',
-            '#######  ##',
-            '        ## ',
-            '#########  ',
-        ]))
+        self.f(
+            rule=11,
+            expected='\n'.join([
+                '     #     ',
+                '#####  ####',
+                '      ##   ',
+                '#######  ##',
+                '        ## ',
+                '#########  ',
+            ]))
 
     def test_rule_12(self):
-        self.f(rule=12, expected = '\n'.join([
-            '     #     ',
-            '     #     ',
-            '     #     ',
-            '     #     ',
-            '     #     ',
-            '     #     ',
-        ]))
+        self.f(
+            rule=12,
+            expected='\n'.join([
+                '     #     ',
+                '     #     ',
+                '     #     ',
+                '     #     ',
+                '     #     ',
+                '     #     ',
+            ]))
 
     def test_rule_13(self):
-        self.f(rule=13, expected = '\n'.join([
-            '     #     ',
-            '#### # ####',
-            '     # #   ',
-            '#### # # ##',
-            '     # # # ',
-            '#### # # # ',
-        ]))
+        self.f(
+            rule=13,
+            expected='\n'.join([
+                '     #     ',
+                '#### # ####',
+                '     # #   ',
+                '#### # # ##',
+                '     # # # ',
+                '#### # # # ',
+            ]))
 
     def test_rule_14(self):
-        self.f(rule=14, expected = '\n'.join([
-            '     #     ',
-            '    ##     ',
-            '   ##      ',
-            '  ##       ',
-            ' ##        ',
-            '##         ',
-        ]))
+        self.f(
+            rule=14,
+            expected='\n'.join([
+                '     #     ',
+                '    ##     ',
+                '   ##      ',
+                '  ##       ',
+                ' ##        ',
+                '##         ',
+            ]))
 
     def test_rule_15(self):
-        self.f(rule=15, expected = '\n'.join([
-            '     #     ',
-            '###### ####',
-            '       #   ',
-            '######## ##',
-            '         # ',
-            '########## ',
-        ]))
+        self.f(
+            rule=15,
+            expected='\n'.join([
+                '     #     ',
+                '###### ####',
+                '       #   ',
+                '######## ##',
+                '         # ',
+                '########## ',
+            ]))
 
     def test_rule_16(self):
-        self.f(rule=16, expected = '\n'.join([
-            '     #     ',
-            '      #    ',
-            '       #   ',
-            '        #  ',
-            '         # ',
-            '          #',
-        ]))
+        self.f(
+            rule=16,
+            expected='\n'.join([
+                '     #     ',
+                '      #    ',
+                '       #   ',
+                '        #  ',
+                '         # ',
+                '          #',
+            ]))
 
     def test_rule_17(self):
-        self.f(rule=17, expected = '\n'.join([
-            '     #     ',
-            '####  #####',
-            '    #      ',
-            '###  ######',
-            '   #       ',
-            '##  #######',
-        ]))
+        self.f(
+            rule=17,
+            expected='\n'.join([
+                '     #     ',
+                '####  #####',
+                '    #      ',
+                '###  ######',
+                '   #       ',
+                '##  #######',
+            ]))
 
     def test_rule_18(self):
-        self.f(rule=18, expected = '\n'.join([
-            '     #     ',
-            '    # #    ',
-            '   #   #   ',
-            '  # # # #  ',
-            ' #       # ',
-            '# #     # #',
-        ]))
+        self.f(
+            rule=18,
+            expected='\n'.join([
+                '     #     ',
+                '    # #    ',
+                '   #   #   ',
+                '  # # # #  ',
+                ' #       # ',
+                '# #     # #',
+            ]))
 
     def test_rule_19(self):
-        self.f(rule=19, expected = '\n'.join([
-            '    ##     ',
-            '####  #####',
-            '    ##     ',
-            '####  #####',
-            '    ##     ',
-            '####  #####',
-        ]),
-        starting_line=self.middle_and_the_one_to_the_left_on_first_line)
+        self.f(
+            rule=19,
+            expected='\n'.join([
+                '    ##     ',
+                '####  #####',
+                '    ##     ',
+                '####  #####',
+                '    ##     ',
+                '####  #####',
+            ]),
+            starting_line=self.middle_and_the_one_to_the_left_on_first_line)
 
     def test_rule_20(self):
-        self.f(rule=20, expected = '\n'.join([
-            '     #     ',
-            '     ##    ',
-            '       #   ',
-            '       ##  ',
-            '         # ',
-            '         ##',
-        ]))
+        self.f(
+            rule=20,
+            expected='\n'.join([
+                '     #     ',
+                '     ##    ',
+                '       #   ',
+                '       ##  ',
+                '         # ',
+                '         ##',
+            ]))
 
     def test_rule_21(self):
-        self.f(rule=21, expected = '\n'.join([
-            '    ##     ',
-            '###   #####',
-            '   ##      ',
-            '##   ######',
-            '  ##       ',
-            '#   #######',
-        ]),
-        starting_line=self.middle_and_the_one_to_the_left_on_first_line)
+        self.f(
+            rule=21,
+            expected='\n'.join([
+                '    ##     ',
+                '###   #####',
+                '   ##      ',
+                '##   ######',
+                '  ##       ',
+                '#   #######',
+            ]),
+            starting_line=self.middle_and_the_one_to_the_left_on_first_line)
 
     def test_rule_22(self):
-        self.f(rule=22, expected = '\n'.join([
-            '     #     ',
-            '    ###    ',
-            '   #   #   ',
-            '  ### ###  ',
-            ' #       # ',
-            '###     ###',
-        ]))
+        self.f(
+            rule=22,
+            expected='\n'.join([
+                '     #     ',
+                '    ###    ',
+                '   #   #   ',
+                '  ### ###  ',
+                ' #       # ',
+                '###     ###',
+            ]))
 
     def test_rule_23(self):
-        self.f(rule=23, expected = '\n'.join([
-            '    ##     ',
-            '####  #####',
-            '    ##     ',
-            '####  #####',
-            '    ##     ',
-            '####  #####',
-        ]),
-        starting_line=self.middle_and_the_one_to_the_left_on_first_line)
+        self.f(
+            rule=23,
+            expected='\n'.join([
+                '    ##     ',
+                '####  #####',
+                '    ##     ',
+                '####  #####',
+                '    ##     ',
+                '####  #####',
+            ]),
+            starting_line=self.middle_and_the_one_to_the_left_on_first_line)
 
     def test_rule_24(self):
-        self.f(rule=24, expected = '\n'.join([
-            '     #     ',
-            '      #    ',
-            '       #   ',
-            '        #  ',
-            '         # ',
-            '          #',
-        ]))
+        self.f(
+            rule=24,
+            expected='\n'.join([
+                '     #     ',
+                '      #    ',
+                '       #   ',
+                '        #  ',
+                '         # ',
+                '          #',
+            ]))
 
     def test_rule_25(self):
-        self.f(rule=25, expected = '\n'.join([
-            '     #     ',
-            '####  #####',
-            '    # #    ',
-            '###    ####',
-            '   ### #   ',
-            '## #    ###',
-        ]))
+        self.f(
+            rule=25,
+            expected='\n'.join([
+                '     #     ',
+                '####  #####',
+                '    # #    ',
+                '###    ####',
+                '   ### #   ',
+                '## #    ###',
+            ]))
 
     def test_rule_26(self):
-        self.f(rule=26, expected = '\n'.join([
-            '     #     ',
-            '    # #    ',
-            '   #   #   ',
-            '  # # # #  ',
-            ' #       # ',
-            '# #     # #',
-        ]))
+        self.f(
+            rule=26,
+            expected='\n'.join([
+                '     #     ',
+                '    # #    ',
+                '   #   #   ',
+                '  # # # #  ',
+                ' #       # ',
+                '# #     # #',
+            ]))
 
     def test_rule_27(self):
-        self.f(rule=27, expected = '\n'.join([
-            '     #     ',
-            '##### #####',
-            '      #    ',
-            '###### ####',
-            '       #   ',
-            '####### ###',
-        ]))
+        self.f(
+            rule=27,
+            expected='\n'.join([
+                '     #     ',
+                '##### #####',
+                '      #    ',
+                '###### ####',
+                '       #   ',
+                '####### ###',
+            ]))
 
     def test_rule_28(self):
-        self.f(rule=28, expected = '\n'.join([
-            '     #     ',
-            '     ##    ',
-            '     # #   ',
-            '     # ##  ',
-            '     # # # ',
-            '     # # ##',
-        ]))
+        self.f(
+            rule=28,
+            expected='\n'.join([
+                '     #     ',
+                '     ##    ',
+                '     # #   ',
+                '     # ##  ',
+                '     # # # ',
+                '     # # ##',
+            ]))
 
     def test_rule_29(self):
-        self.f(rule=29, expected = '\n'.join([
-            '     #     ',
-            '#### ######',
-            '     #     ',
-            '#### ######',
-            '     #     ',
-            '#### ######',
-        ]))
+        self.f(
+            rule=29,
+            expected='\n'.join([
+                '     #     ',
+                '#### ######',
+                '     #     ',
+                '#### ######',
+                '     #     ',
+                '#### ######',
+            ]))
 
     def test_rule_30(self):
-        self.f(rule=30, expected = '\n'.join([
-            '     #     ',
-            '    ###    ',
-            '   ##  #   ',
-            '  ## ####  ',
-            ' ##  #   # ',
-            '## #### ###',
-        ]))
+        self.f(
+            rule=30,
+            expected='\n'.join([
+                '     #     ',
+                '    ###    ',
+                '   ##  #   ',
+                '  ## ####  ',
+                ' ##  #   # ',
+                '## #### ###',
+            ]))
 
     def test_rule_45(self):
-        self.f(rule=45, expected = '\n'.join([
-            '     #     ',
-            '#### # ####',
-            '    ####   ',
-            '### #    ##',
-            '   ## ## # ',
-            '## # ## ## ',
-        ]))
+        self.f(
+            rule=45,
+            expected='\n'.join([
+                '     #     ',
+                '#### # ####',
+                '    ####   ',
+                '### #    ##',
+                '   ## ## # ',
+                '## # ## ## ',
+            ]))
 
     def test_rule_57(self):
-        self.f(rule=57, expected = '\n'.join([
-            '     #     ',
-            '####  #####',
-            '    # #    ',
-            '###  # ####',
-            '   #  ##   ',
-            '##  # # ###',
-        ]))
+        self.f(
+            rule=57,
+            expected='\n'.join([
+                '     #     ',
+                '####  #####',
+                '    # #    ',
+                '###  # ####',
+                '   #  ##   ',
+                '##  # # ###',
+            ]))
 
     def test_rule_90(self):
-        self.f(rule=90, expected = '\n'.join([
-            '     #     ',
-            '    # #    ',
-            '   #   #   ',
-            '  # # # #  ',
-            ' #       # ',
-            '# #     # #',
-        ]))
+        self.f(
+            rule=90,
+            expected='\n'.join([
+                '     #     ',
+                '    # #    ',
+                '   #   #   ',
+                '  # # # #  ',
+                ' #       # ',
+                '# #     # #',
+            ]))
 
     def test_rule_105(self):
-        self.f(rule=105, expected = '\n'.join([
-            '     #     ',
-            '####   ####',
-            '   # # #   ',
-            '##  # #  ##',
-            ' #   #   # ',
-            '   #   #   ',
-        ]))
+        self.f(
+            rule=105,
+            expected='\n'.join([
+                '     #     ',
+                '####   ####',
+                '   # # #   ',
+                '##  # #  ##',
+                ' #   #   # ',
+                '   #   #   ',
+            ]))
 
     def test_rule_109(self):
-        self.f(rule=109, expected = '\n'.join([
-            '     #     ',
-            '#### # ####',
-            '   #####   ',
-            '## #   # ##',
-            ' ### # ### ',
-            ' # ##### # ',
-        ]))
+        self.f(
+            rule=109,
+            expected='\n'.join([
+                '     #     ',
+                '#### # ####',
+                '   #####   ',
+                '## #   # ##',
+                ' ### # ### ',
+                ' # ##### # ',
+            ]))
 
     def test_rule_128(self):
-        seven_cells_on_first_line = lambda x: abs(x) <= 3
-        self.f(rule=128, expected = '\n'.join([
-            '  #######  ',
-            '   #####   ',
-            '    ###    ',
-            '     #     ',
-            '           ',
-            '           ',
-        ]),
-        starting_line=seven_cells_on_first_line)
+        def seven_cells_on_first_line(x):
+            return abs(x) <= 3
+
+        self.f(
+            rule=128,
+            expected='\n'.join([
+                '  #######  ',
+                '   #####   ',
+                '    ###    ',
+                '     #     ',
+                '           ',
+                '           ',
+            ]),
+            starting_line=seven_cells_on_first_line)
 
     def test_rule_137(self):
-        self.f(rule=137, expected = '\n'.join([
-            '     #     ',
-            '####   ####',
-            '###  # ####',
-            '##     ####',
-            '#  ### ####',
-            '   ##  ####',
-        ]))
+        self.f(
+            rule=137,
+            expected='\n'.join([
+                '     #     ',
+                '####   ####',
+                '###  # ####',
+                '##     ####',
+                '#  ### ####',
+                '   ##  ####',
+            ]))
 
     def test_rule_225(self):
-        self.f(rule=225, expected = '\n'.join([
-            '     #     ',
-            '####   ####',
-            '#### #  ###',
-            '#####    ##',
-            '##### ##  #',
-            '###### #   ',
-        ]))
+        self.f(
+            rule=225,
+            expected='\n'.join([
+                '     #     ',
+                '####   ####',
+                '#### #  ###',
+                '#####    ##',
+                '##### ##  #',
+                '###### #   ',
+            ]))
 
     def test_rule_250(self):
-        self.f(rule=250, expected = '\n'.join([
-            '     #     ',
-            '    # #    ',
-            '   # # #   ',
-            '  # # # #  ',
-            ' # # # # # ',
-            '# # # # # #',
-        ]))
+        self.f(
+            rule=250,
+            expected='\n'.join([
+                '     #     ',
+                '    # #    ',
+                '   # # #   ',
+                '  # # # #  ',
+                ' # # # # # ',
+                '# # # # # #',
+            ]))
 
     def test_rule_251(self):
-        four_cells_with_spaces = lambda x: x in [-3, -1, 1, 3]
-        self.f(rule=251, expected = '\n'.join([
-            '  # # # #  ',
-            '## # # # ##',
-            '### # # ###',
-            '#### # ####',
-            '##### #####',
-            '###########',
-        ]),
-        starting_line=four_cells_with_spaces)
+        def four_cells_with_spaces(x):
+            return x in [-3, -1, 1, 3]
+
+        self.f(
+            rule=251,
+            expected='\n'.join([
+                '  # # # #  ',
+                '## # # # ##',
+                '### # # ###',
+                '#### # ####',
+                '##### #####',
+                '###########',
+            ]),
+            starting_line=four_cells_with_spaces)
 
     def test_rule_252(self):
-        self.f(rule=252, expected = '\n'.join([
-            '     #     ',
-            '     ##    ',
-            '     ###   ',
-            '     ####  ',
-            '     ##### ',
-            '     ######',
-        ]))
+        self.f(
+            rule=252,
+            expected='\n'.join([
+                '     #     ',
+                '     ##    ',
+                '     ###   ',
+                '     ####  ',
+                '     ##### ',
+                '     ######',
+            ]))
 
     def test_rule_253(self):
-        self.f(rule=253, expected = '\n'.join([
-            '     #     ',
-            '#### ######',
-            '###########',
-            '###########',
-            '###########',
-            '###########',
-        ]))
+        self.f(
+            rule=253,
+            expected='\n'.join([
+                '     #     ',
+                '#### ######',
+                '###########',
+                '###########',
+                '###########',
+                '###########',
+            ]))
 
     def test_rule_254(self):
-        self.f(rule=254, expected = '\n'.join([
-            '     #     ',
-            '    ###    ',
-            '   #####   ',
-            '  #######  ',
-            ' ######### ',
-            '###########',
-        ]))
+        self.f(
+            rule=254,
+            expected='\n'.join([
+                '     #     ',
+                '    ###    ',
+                '   #####   ',
+                '  #######  ',
+                ' ######### ',
+                '###########',
+            ]))
 
     def test_rule_255(self):
-        self.f(rule=255, expected = '\n'.join([
-            '     #     ',
-            '###########',
-            '###########',
-            '###########',
-            '###########',
-            '###########',
-        ]))
+        self.f(
+            rule=255,
+            expected='\n'.join([
+                '     #     ',
+                '###########',
+                '###########',
+                '###########',
+                '###########',
+                '###########',
+            ]))
 
 
 class TestToSVG(unittest.TestCase):

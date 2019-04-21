@@ -1,4 +1,3 @@
-from itertools import chain, accumulate
 import argparse
 
 # http://en.wikipedia.org/wiki/Elementary_cellular_automaton
@@ -198,7 +197,6 @@ def find_cell_value(x, y, rule, starting_line=None):
         starting_line = a_single_cell
 
     if y < 0:
-        # logging.warning this shouldn't ordinarily be called, may indicate a bug.
         return False
 
     if y == 0:
@@ -219,11 +217,6 @@ def find_cell_value(x, y, rule, starting_line=None):
 def find_x_coordinates(width):
     if width < 0:
         raise ValueError('width must be positive')
-
-    if width % 2 != 0:
-        pass
-        #raise ValueError('width must be odd')
-        # logging.warning('an odd width would result in a more symmetrically layout')
 
     offset = width // 2
     remainder = width % 2
@@ -248,7 +241,7 @@ def calc_grid(width, height, rule=_DEFAULT_RULE, starting_line=None):
     gridLines = find_coordinates(width=width, height=height)
     for gridLine in gridLines:
         yield (find_cell_value(x=cell[0], y=cell[1],
-                    rule=rule, starting_line=starting_line)
+                               rule=rule, starting_line=starting_line)
                for cell in gridLine)
 
 
