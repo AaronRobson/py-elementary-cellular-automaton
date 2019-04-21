@@ -13,6 +13,7 @@ def BoolCollectionToInt(boolCollection):
 
 
 def width_at_given_generation(generation):
+    '''Holds only for pyramid based rules like rule 30.'''
     generation = int(generation)
 
     if generation < 0:
@@ -69,37 +70,14 @@ def is_wolfram_code_valid(numRule):
     return numRule in WOLFRAM_CODES
 
 
-def rule_calc(neighbours, wolframCode):
-    assert is_wolfram_code_valid(wolframCode)
-    neighbourIndex = neighbours_to_int(neighbours)
-    assert neighbourIndex in _NEIGHBOURHOOD_CONFIGURATION_INDEXES
-
-    # The real meat of the program.
-    return bool(index_to_num(neighbourIndex) & wolframCode)
-
-
-def rule_factory(wolframCode):
-    '''Is checked within RuleCalc itself but here we know as soon as
-    possible that there has been a mistake.
-    '''
-    assert is_wolfram_code_valid(wolframCode)
-
-    def RuleCalcFixed(neighbours):
-        f'''Rule Calc for Rule {wolframCode}.'''
-        return rule_calc(neighbours, wolframCode)
-
-    RuleCalcFixed.__name__ = f'Rule {wolframCode}'
-    RuleCalcFixed.wolframCode = wolframCode
-
-    return RuleCalcFixed
-
-
-def AllRuleFuncs():
-    return map(rule_factory, WOLFRAM_CODES)
+def ensureWolframCodeIsValid(wolframCode):
+    if not is_wolfram_code_valid(wolframCode):
+        raise ValueError(f'Wolfram code {wolframCode} is invalid, '
+                         'use values between '
+                         f'{LOW_WOLFRAM_CODE} and {HIGH_WOLFRAM_CODE}')
 
 
 _DEFAULT_RULE = 30
-DEFAULT_RULE = rule_factory(_DEFAULT_RULE)
 
 ON = True
 OFF = False
@@ -149,67 +127,16 @@ def SymbolsToString(symbols):
     return ''.join(SymbolsToChars(symbols))
 
 
-def CentreSymbols(line, paddingEachSide=1, padWith=OFF):
-    pad = (padWith,) * paddingEachSide
-    return chain(pad, line, pad)
-
-
-STARTING_POINT = (OFF, ON, OFF)
-
-
-def NextLineSpecifyRule(rule, currentLine):
-    preparedLine = CentreSymbols(currentLine, _NEIGHBOURHOOD_SCOPE * 2, OFF)
-    return map(rule, RollingCollection(preparedLine, _NEIGHBOURHOOD_SIZE))
-
-
-def NextLineFactory(rule):
-    def NextLine(currentLine):
-        return NextLineSpecifyRule(rule, currentLine)
-
-    return NextLine
-
-
-def RuleGenerator(rule=DEFAULT_RULE, start=STARTING_POINT, includeStart=True):
-    value = start
-
-    if includeStart:
-        yield value
-
-    f = NextLineFactory(rule)
-    while True:
-        value = tuple(f(value))
-        yield value
-
-
-def RuleGeneratorArrangements(*args, **kwargs):
-    '''If the lines don't get tupled again the accumulate will flatten
-    the arrangements.
-    '''
-    tupledLines = ((line,) for line in RuleGenerator(*args, **kwargs))
-    return accumulate(tupledLines)
-
-
-def RuleGeneratorArrangementsPadded(*args, **kwargs):
-    for diagram in RuleGeneratorArrangements(*args, **kwargs):
-        yield (CentreSymbols(item, len(diagram)-i-1)
-               for i, item in enumerate(diagram))
-
-
-def RuleGeneratorArrangementsPaddedStrings(*args, **kwargs):
-    for arrangement in RuleGeneratorArrangementsPadded(*args, **kwargs):
-        yield '\n'.join(map(SymbolsToString, arrangement))
-
-
 def ToSVG(data, side=10, foreground='#000000', background='#ffffff'):
     side = int(side)
     if side <= 0:
         raise ValueError('Only strictly positive whole numbers shall '
                          'be accepted as side lengths.')
 
-    data = tuple(data)
+    data = list(map(list, data))
+    itemCount = len(data[0])
     lineCount = len(data)
-    generation = lineCount-1
-    width = width_at_given_generation(generation) * side
+    width = itemCount * side
     height = lineCount * side
 
     yield '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
@@ -249,31 +176,84 @@ def ToSVG(data, side=10, foreground='#000000', background='#ffffff'):
     yield ''
 
 
-# testing an idea for showing the surrounding padding
-def RollingCollection(items, sampleSize, pad=0, padValue=None):
-    if sampleSize < 1:
-        raise ValueError('Sample Size must be at least 1.')
-
-    if pad < 0:
-        raise ValueError('Padding should be at least 0.')
-
-    paddingItems = (padValue,) * pad
-    items = chain(paddingItems, items, paddingItems)
-
-    items = tuple(items)
-
-    for i in range(len(items)-sampleSize+1):
-        yield items[i:i+sampleSize]
-
-
 def _validate_rule_code(rule):
+    # TODO: rewrite with ensureWolframCodeIsValid
     value = int(rule)
     min = 0
     max = 0xff
-    if not (0 <= value <= 0xff):
+    if not (min <= value <= max):
         raise argparse.ArgumentTypeError(
             f'Rule {value} must be between {min} and {max} inclusive.')
     return value
+
+
+def a_single_cell(x):
+    return x == 0
+
+
+def find_cell_value(x, y, rule, starting_line=None):
+    ensureWolframCodeIsValid(rule)
+
+    if starting_line is None:
+        starting_line = a_single_cell
+
+    if y < 0:
+        # logging.warning this shouldn't ordinarily be called, may indicate a bug.
+        return False
+
+    if y == 0:
+        return starting_line(x)
+
+    neighbourValues = (
+        find_cell_value(x=x-1, y=y-1, rule=rule, starting_line=starting_line),
+        find_cell_value(x=x+0, y=y-1, rule=rule, starting_line=starting_line),
+        find_cell_value(x=x+1, y=y-1, rule=rule, starting_line=starting_line),
+    )
+
+    neighbourIndex = neighbours_to_int(neighbourValues)
+    assert neighbourIndex in _NEIGHBOURHOOD_CONFIGURATION_INDEXES
+
+    return bool(index_to_num(neighbourIndex) & rule)
+
+
+def find_x_coordinates(width):
+    if width < 0:
+        raise ValueError('width must be positive')
+
+    if width % 2 != 0:
+        pass
+        #raise ValueError('width must be odd')
+        # logging.warning('an odd width would result in a more symmetrically layout')
+
+    offset = width // 2
+    remainder = width % 2
+    return range(-offset, offset + remainder)
+
+
+def find_y_coordinates(height):
+    if height < 0:
+        raise ValueError('height must be positive')
+    return range(height)
+
+
+def find_coordinates(width, height):
+    xValues = list(find_x_coordinates(width=width))
+    yValues = find_y_coordinates(height=height)
+
+    for y in yValues:
+        yield ((x, y) for x in xValues)
+
+
+def calc_grid(width, height, rule=_DEFAULT_RULE, starting_line=None):
+    gridLines = find_coordinates(width=width, height=height)
+    for gridLine in gridLines:
+        yield (find_cell_value(x=cell[0], y=cell[1],
+                    rule=rule, starting_line=starting_line)
+               for cell in gridLine)
+
+
+def grid_to_text(grid):
+    return '\n'.join(map(SymbolsToString, grid))
 
 
 def _make_parser():
@@ -305,24 +285,14 @@ if __name__ == '__main__':
     parser = _make_parser()
     settings = parser.parse_args()
 
-    rule_func = rule_factory(settings.rule)
-    f = RuleGeneratorArrangementsPadded(rule_func)
+    height = settings.generations
+    width = width_at_given_generation(generation=height)
 
-    for _ in range(settings.generations):
-        lastArrangement = next(f)
+    grid = calc_grid(width=width, height=height, rule=settings.rule)
 
     if settings.output is None:
-        # print(rule_func.__name__)
-        rgf = RuleGeneratorArrangementsPaddedStrings(rule_func)
-        for i in range(settings.generations):
-            pattern = next(rgf)
-        print(pattern)
+        print(grid_to_text(grid))
     else:
-        svg = '\n'.join(ToSVG(lastArrangement))
+        svg = '\n'.join(ToSVG(grid))
         with open(settings.output, 'w') as f:
             f.write(svg)
-
-    '''
-    for f in s.AllRuleFuncs():
-        print(f.__name__)
-    '''
