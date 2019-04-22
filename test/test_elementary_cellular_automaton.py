@@ -772,7 +772,11 @@ class TestGrid(unittest.TestCase):
 
 
 class TestToSVG(unittest.TestCase):
-    def test(self):
+    def test_negative_side_length(self):
+        with self.assertRaises(ValueError):
+            list(eca.ToSVG(data=[], side=-1))
+
+    def test_normal(self):
         # Rule 30
         GIVEN_DATA = [
             [False, False, False, True, False, False, False],
