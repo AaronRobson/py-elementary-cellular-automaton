@@ -257,16 +257,23 @@ def grid_to_text(grid):
 
 
 def _make_parser():
-    DEFAULT_GENERATIONS = 10
+    DEFAULT_GENERATIONS = 6
     parser = argparse.ArgumentParser(
         description='Generate Wolfram elementary cellular automaton patterns.'
     )
     parser.add_argument(
         '-g', '--generations',
+        '-e', '--height',
         type=int,
         default=DEFAULT_GENERATIONS,
-        help='Number of generations (i.e. interations) to run '
+        help='Number of generations to run (i.e. the height) '
         f'(default: {DEFAULT_GENERATIONS}).')
+    parser.add_argument(
+        '-w', '--width',
+        type=int,
+        default=None,
+        help='Width of the view '
+        f'(default: dependent on the generations/height).')
     parser.add_argument(
         '-r', '--rule',
         type=_validate_rule_code,
@@ -286,7 +293,10 @@ if __name__ == '__main__':
     settings = parser.parse_args()
 
     height = settings.generations
-    width = width_at_given_generation(generation=height)
+    if settings.width is None:
+        width = width_at_given_generation(generation=height)
+    else:
+        width = settings.width
 
     grid = calc_grid(width=width, height=height, rule=settings.rule)
 

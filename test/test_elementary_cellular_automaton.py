@@ -6,6 +6,7 @@ import elementary_cellular_automaton as eca
 class TestWidthAtGivenGeneration(unittest.TestCase):
     def test(self):
         self.assertEqual(eca.width_at_given_generation(2), 5)
+        self.assertEqual(eca.width_at_given_generation(6), 13)
 
 
 class TestIndexToNum(unittest.TestCase):
