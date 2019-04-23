@@ -3,6 +3,8 @@ from functools import lru_cache
 
 # http://en.wikipedia.org/wiki/Elementary_cellular_automaton
 
+_DEFAULT_GENERATIONS = 6
+
 
 def BoolCollectionToBase2Str(boolCollection):
     return ''.join((str(int(bool(item))) for item in boolCollection))
@@ -236,7 +238,10 @@ def find_y_coordinates(height):
     return range(height)
 
 
-def find_coordinates(width, height):
+def find_coordinates(width=None, height=_DEFAULT_GENERATIONS):
+    if width is None:
+        width = width_at_given_generation(generation=height)
+
     xValues = list(find_x_coordinates(width=width))
     yValues = find_y_coordinates(height=height)
 
@@ -257,7 +262,6 @@ def grid_to_text(grid):
 
 
 def _make_parser():
-    DEFAULT_GENERATIONS = 6
     parser = argparse.ArgumentParser(
         description='Generate Wolfram elementary cellular automaton patterns.'
     )
@@ -265,9 +269,9 @@ def _make_parser():
         '-g', '--generations',
         '-e', '--height',
         type=int,
-        default=DEFAULT_GENERATIONS,
+        default=_DEFAULT_GENERATIONS,
         help='Number of generations to run (i.e. the height) '
-        f'(default: {DEFAULT_GENERATIONS}).')
+        f'(default: {_DEFAULT_GENERATIONS}).')
     parser.add_argument(
         '-w', '--width',
         type=int,
@@ -292,13 +296,10 @@ if __name__ == '__main__':
     parser = _make_parser()
     settings = parser.parse_args()
 
-    height = settings.generations
-    if settings.width is None:
-        width = width_at_given_generation(generation=height)
-    else:
-        width = settings.width
-
-    grid = calc_grid(width=width, height=height, rule=settings.rule)
+    grid = calc_grid(
+        width=settings.width,
+        height=settings.generations,
+        rule=settings.rule)
 
     if settings.output is None:
         print(grid_to_text(grid))
