@@ -1,4 +1,5 @@
 import argparse
+from functools import lru_cache
 
 # http://en.wikipedia.org/wiki/Elementary_cellular_automaton
 
@@ -187,16 +188,9 @@ def a_single_cell(x):
     return x == 0
 
 
-def find_cell_value(x, y, rule, starting_line=None, cache=None):
+@lru_cache(maxsize=None)
+def find_cell_value(x, y, rule, starting_line=None):
     ensureWolframCodeIsValid(rule)
-
-    if cache is None:
-        cache = {}
-
-    try:
-        return cache[(x, y)]
-    except KeyError:
-        pass
 
     if starting_line is None:
         starting_line = a_single_cell
@@ -210,21 +204,19 @@ def find_cell_value(x, y, rule, starting_line=None, cache=None):
     neighbourValues = (
         find_cell_value(
             x=x-1, y=y-1,
-            rule=rule, starting_line=starting_line, cache=cache),
+            rule=rule, starting_line=starting_line),
         find_cell_value(
             x=x+0, y=y-1,
-            rule=rule, starting_line=starting_line, cache=cache),
+            rule=rule, starting_line=starting_line),
         find_cell_value(
             x=x+1, y=y-1,
-            rule=rule, starting_line=starting_line, cache=cache),
+            rule=rule, starting_line=starting_line),
     )
 
     neighbourIndex = neighbours_to_int(neighbourValues)
     assert neighbourIndex in _NEIGHBOURHOOD_CONFIGURATION_INDEXES
 
-    output = bool(index_to_num(neighbourIndex) & rule)
-    cache[(x, y)] = output
-    return output
+    return bool(index_to_num(neighbourIndex) & rule)
 
 
 def find_x_coordinates(width):
