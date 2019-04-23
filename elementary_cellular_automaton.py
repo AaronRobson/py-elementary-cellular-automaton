@@ -217,7 +217,9 @@ def find_x_coordinates(width):
 
     offset = width // 2
     remainder = width % 2
-    return range(-offset, offset + remainder)
+    lowerInclusiveBound = -offset + 1 - remainder
+    upperExclusiveBound = lowerInclusiveBound + width
+    return range(lowerInclusiveBound, upperExclusiveBound)
 
 
 def find_y_coordinates(height):

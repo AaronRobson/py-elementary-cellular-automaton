@@ -111,7 +111,10 @@ class TestFindXCoordinates(unittest.TestCase):
         self.assertEqual(list(eca.find_x_coordinates(5)), [-2, -1, 0, 1, 2])
 
     def test_even(self):
-        self.assertEqual(list(eca.find_x_coordinates(4)), [-2, -1, 0, 1])
+        self.assertEqual(
+            list(eca.find_x_coordinates(4)),
+            [-1, 0, 1, 2],
+            'Middle column must be left of centre in the case of even width.')
 
 
 class TestFindYCoordinates(unittest.TestCase):
