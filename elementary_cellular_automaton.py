@@ -47,9 +47,7 @@ def int_to_neighbours(intNeighbours):
 def neighbours_to_int(neighbours):
     neighbours = tuple(neighbours)
     assert len(neighbours) <= _NEIGHBOURHOOD_SIZE
-    assert _NUMBER_OF_CHOICES == 2  # Bool assumed.
-    base2Str = BoolCollectionToBase2Str(neighbours)
-    return int(base2Str, _NUMBER_OF_CHOICES)
+    return BoolCollectionToInt(neighbours)
 
 
 NEIGHBOURHOOD_CONFIGURATIONS = tuple(
