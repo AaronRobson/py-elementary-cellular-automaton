@@ -32,22 +32,22 @@ class TestConstants(unittest.TestCase):
             eca.NUM_OF_WOLFRAM_CODES)
 
 
-class TestBoolCollectionToBase2Str(unittest.TestCase):
+class TestBoolSequenceToBase2Str(unittest.TestCase):
     def test_bools(self):
         self.assertEqual(
-            eca.BoolCollectionToBase2Str((True, False, False)),
+            eca.bool_sequence_to_base2_str((True, False, False)),
             '100')
 
     def test_ints(self):
-        self.assertEqual(eca.BoolCollectionToBase2Str((1, 0, 1)), '101')
+        self.assertEqual(eca.bool_sequence_to_base2_str((1, 0, 1)), '101')
 
 
-class TestBoolCollectionToInt(unittest.TestCase):
+class TestBoolSequenceToInt(unittest.TestCase):
     def test_bools(self):
-        self.assertEqual(eca.BoolCollectionToInt((True, False, False)), 4)
+        self.assertEqual(eca.bool_sequence_to_int((True, False, False)), 4)
 
     def test_ints(self):
-        self.assertEqual(eca.BoolCollectionToInt((1, 0, 1)), 5)
+        self.assertEqual(eca.bool_sequence_to_int((1, 0, 1)), 5)
 
 
 class TestNeighboursToInt(unittest.TestCase):

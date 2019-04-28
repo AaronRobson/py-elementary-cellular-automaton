@@ -6,12 +6,12 @@ from functools import lru_cache
 _DEFAULT_GENERATIONS = 6
 
 
-def BoolCollectionToBase2Str(boolCollection):
+def bool_sequence_to_base2_str(boolCollection):
     return ''.join((str(int(bool(item))) for item in boolCollection))
 
 
-def BoolCollectionToInt(boolCollection):
-    return int(BoolCollectionToBase2Str(boolCollection), 2)
+def bool_sequence_to_int(boolCollection):
+    return int(bool_sequence_to_base2_str(boolCollection), 2)
 
 
 def width_at_given_generation(generation):
@@ -47,7 +47,7 @@ def int_to_neighbours(intNeighbours):
 def neighbours_to_int(neighbours):
     neighbours = tuple(neighbours)
     assert len(neighbours) <= _NEIGHBOURHOOD_SIZE
-    return BoolCollectionToInt(neighbours)
+    return bool_sequence_to_int(neighbours)
 
 
 NEIGHBOURHOOD_CONFIGURATIONS = tuple(
