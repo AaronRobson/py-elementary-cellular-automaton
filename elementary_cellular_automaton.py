@@ -87,18 +87,6 @@ _symbolchar = {
 for value in _symbolchar.values():
     assert len(value) == 1
 
-_charsymbol = {v: k for k, v in _symbolchar.items()}
-
-assert len(_symbolchar) == len(_charsymbol), 'Same Value duplicated in more ' \
-    'than one Key in %r.' % (_symbolchar)
-
-
-def CharToSymbol(char):
-    try:
-        return _charsymbol[char]
-    except KeyError:
-        raise ValueError('%r is not a valid character value.' % char)
-
 
 def SymbolToChar(symbol):
     try:
@@ -107,17 +95,8 @@ def SymbolToChar(symbol):
         raise ValueError('%r is not a valid symbol value.' % symbol)
 
 
-def CharsToSymbols(chars):
-    return map(CharToSymbol, chars)
-
-
 def SymbolsToChars(symbols):
     return map(SymbolToChar, symbols)
-
-
-def StringToSymbols(inStr):
-    chars = tuple(str(inStr))
-    return CharsToSymbols(chars)
 
 
 def SymbolsToString(symbols):
