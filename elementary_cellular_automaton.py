@@ -254,7 +254,7 @@ def _make_parser():
         type=int,
         default=None,
         help='Width of the view '
-        f'(default: dependent on the generations/height).')
+        '(default: dependent on the generations/height).')
     parser.add_argument(
         '-r', '--rule',
         type=_validate_rule_code,
