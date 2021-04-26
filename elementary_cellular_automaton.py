@@ -6,12 +6,12 @@ from functools import lru_cache
 _DEFAULT_GENERATIONS = 6
 
 
-def bool_sequence_to_base2_str(boolCollection):
-    return ''.join((str(int(bool(item))) for item in boolCollection))
+def bool_sequence_to_base2_str(bool_collection):
+    return ''.join((str(int(bool(item))) for item in bool_collection))
 
 
-def bool_sequence_to_int(boolCollection):
-    return int(bool_sequence_to_base2_str(boolCollection), 2)
+def bool_sequence_to_int(bool_collection):
+    return int(bool_sequence_to_base2_str(bool_collection), 2)
 
 
 def width_at_given_generation(generation):
@@ -38,10 +38,10 @@ def index_to_num(index):
     return _NUMBER_OF_CHOICES**index
 
 
-def int_to_neighbours(intNeighbours):
-    assert intNeighbours in _NEIGHBOURHOOD_CONFIGURATION_INDEXES
+def int_to_neighbours(int_neighbours):
+    assert int_neighbours in _NEIGHBOURHOOD_CONFIGURATION_INDEXES
     # bin assumes two choices
-    return (bool(int(b)) for b in bin(intNeighbours)[2:])
+    return (bool(int(b)) for b in bin(int_neighbours)[2:])
 
 
 def neighbours_to_int(neighbours):
@@ -64,15 +64,15 @@ WOLFRAM_CODES = tuple(
     range(LOW_WOLFRAM_CODE, NUM_OF_WOLFRAM_CODES))
 
 
-def is_wolfram_code_valid(numRule):
+def is_wolfram_code_valid(num_rule):
     '''http://en.wikipedia.org/wiki/Wolfram_code
     '''
-    return numRule in WOLFRAM_CODES
+    return num_rule in WOLFRAM_CODES
 
 
-def ensureWolframCodeIsValid(wolframCode):
-    if not is_wolfram_code_valid(wolframCode):
-        raise ValueError(f'Wolfram code {wolframCode} is invalid, '
+def ensure_wolfram_code_is_valid(wolfram_code):
+    if not is_wolfram_code_valid(wolfram_code):
+        raise ValueError(f'Wolfram code {wolfram_code} is invalid, '
                          'use values between '
                          f'{LOW_WOLFRAM_CODE} and {HIGH_WOLFRAM_CODE}')
 
@@ -88,32 +88,32 @@ for value in _symbolchar.values():
     assert len(value) == 1
 
 
-def SymbolToChar(symbol):
+def symbol_to_char(symbol):
     try:
         return _symbolchar[symbol]
     except KeyError:
         raise ValueError('%r is not a valid symbol value.' % symbol)
 
 
-def SymbolsToChars(symbols):
-    return map(SymbolToChar, symbols)
+def symbols_to_chars(symbols):
+    return map(symbol_to_char, symbols)
 
 
-def SymbolsToString(symbols):
-    return ''.join(SymbolsToChars(symbols))
+def symbols_to_string(symbols):
+    return ''.join(symbols_to_chars(symbols))
 
 
-def ToSVG(data, side=10, foreground='#000000', background='#ffffff'):
+def to_svg(data, side=10, foreground='#000000', background='#ffffff'):
     side = int(side)
     if side <= 0:
         raise ValueError('Only strictly positive whole numbers shall '
                          'be accepted as side lengths.')
 
     data = list(map(list, data))
-    itemCount = len(data[0])
-    lineCount = len(data)
-    width = itemCount * side
-    height = lineCount * side
+    item_count = len(data[0])
+    line_count = len(data)
+    width = item_count * side
+    height = line_count * side
 
     yield '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
     yield '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" ' \
@@ -124,25 +124,25 @@ def ToSVG(data, side=10, foreground='#000000', background='#ffffff'):
     yield ''
     yield f'\t<g fill="{foreground}">'
 
-    def Rect(width, height):
+    def rect(width, height):
         def shape(x, y):
-            xScaled = x*width
-            yScaled = y*height
-            return f'\t\t<rect x="{xScaled}" y="{yScaled}" ' + \
+            x_scaled = x*width
+            y_scaled = y*height
+            return f'\t\t<rect x="{x_scaled}" y="{y_scaled}" ' + \
                 f'width="{width}" height="{height}" />'
         return shape
 
-    def Square(dimension):
-        return Rect(dimension, dimension)
+    def square(dimension):
+        return rect(dimension, dimension)
 
-    Draw = Square(side)
+    draw = square(side)
 
-    for y, yItem in enumerate(data):
+    for y, y_item in enumerate(data):
         yield f'\t\t<!-- Line: {y} -->'
 
-        for x, xItem in enumerate(yItem):
-            if xItem:
-                yield Draw(x, y)
+        for x, x_item in enumerate(y_item):
+            if x_item:
+                yield draw(x, y)
 
         yield ''
 
@@ -169,7 +169,7 @@ def a_single_cell(x):
 
 @lru_cache(maxsize=None)
 def find_cell_value(x, y, rule, starting_line=None):
-    ensureWolframCodeIsValid(rule)
+    ensure_wolfram_code_is_valid(rule)
 
     if starting_line is None:
         starting_line = a_single_cell
@@ -180,7 +180,7 @@ def find_cell_value(x, y, rule, starting_line=None):
     if y == 0:
         return starting_line(x)
 
-    neighbourValues = (
+    neighbour_values = (
         find_cell_value(
             x=x-1, y=y-1,
             rule=rule, starting_line=starting_line),
@@ -192,10 +192,10 @@ def find_cell_value(x, y, rule, starting_line=None):
             rule=rule, starting_line=starting_line),
     )
 
-    neighbourIndex = neighbours_to_int(neighbourValues)
-    assert neighbourIndex in _NEIGHBOURHOOD_CONFIGURATION_INDEXES
+    neighbour_index = neighbours_to_int(neighbour_values)
+    assert neighbour_index in _NEIGHBOURHOOD_CONFIGURATION_INDEXES
 
-    return bool(index_to_num(neighbourIndex) & rule)
+    return bool(index_to_num(neighbour_index) & rule)
 
 
 def find_x_coordinates(width):
@@ -204,9 +204,9 @@ def find_x_coordinates(width):
 
     offset = width // 2
     remainder = width % 2
-    lowerInclusiveBound = -offset + 1 - remainder
-    upperExclusiveBound = lowerInclusiveBound + width
-    return range(lowerInclusiveBound, upperExclusiveBound)
+    lower_inclusive_bound = -offset + 1 - remainder
+    upper_exclusive_bound = lower_inclusive_bound + width
+    return range(lower_inclusive_bound, upper_exclusive_bound)
 
 
 def find_y_coordinates(height):
@@ -219,23 +219,23 @@ def find_coordinates(width=None, height=_DEFAULT_GENERATIONS):
     if width is None:
         width = width_at_given_generation(generation=height)
 
-    xValues = list(find_x_coordinates(width=width))
-    yValues = find_y_coordinates(height=height)
+    x_values = list(find_x_coordinates(width=width))
+    y_values = find_y_coordinates(height=height)
 
-    for y in yValues:
-        yield ((x, y) for x in xValues)
+    for y in y_values:
+        yield ((x, y) for x in x_values)
 
 
 def calc_grid(width, height, rule=_DEFAULT_RULE, starting_line=None):
-    gridLines = find_coordinates(width=width, height=height)
-    for gridLine in gridLines:
+    grid_lines = find_coordinates(width=width, height=height)
+    for grid_line in grid_lines:
         yield (find_cell_value(x=cell[0], y=cell[1],
                                rule=rule, starting_line=starting_line)
-               for cell in gridLine)
+               for cell in grid_line)
 
 
 def grid_to_text(grid):
-    return '\n'.join(map(SymbolsToString, grid))
+    return '\n'.join(map(symbols_to_string, grid))
 
 
 def _make_parser():
@@ -281,6 +281,6 @@ if __name__ == '__main__':
     if settings.output is None:
         print(grid_to_text(grid))
     else:
-        svg = '\n'.join(ToSVG(grid))
+        svg = '\n'.join(to_svg(grid))
         with open(settings.output, 'w') as f:
             f.write(svg)
