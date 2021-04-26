@@ -778,11 +778,11 @@ class TestGrid(unittest.TestCase):
 class TestToSVG(unittest.TestCase):
     def test_negative_side_length(self):
         with self.assertRaises(ValueError):
-            list(eca.ToSVG(data=[], side=-1))
+            list(eca.to_svg(data=[], side=-1))
 
     def test_normal(self):
         # Rule 30
-        GIVEN_DATA = [
+        given_data = [
             [False, False, False, True, False, False, False],
             [False, False, True, True, True, False, False],
             [False, True, True, False, False, True, False],
@@ -814,5 +814,5 @@ class TestToSVG(unittest.TestCase):
             '',
         ])
         self.maxDiff = None
-        actual = '\n'.join(eca.ToSVG(data=GIVEN_DATA))
+        actual = '\n'.join(eca.to_svg(data=given_data))
         self.assertEqual(actual, expected)
