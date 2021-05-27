@@ -8,7 +8,7 @@ install-packages:
 	pip3 install --upgrade \
 	  -r dev-requirements.txt \
 	  -r requirements.txt \
-	  -r test/requirements.txt
+	  -r tests/requirements.txt
 
 .PHONY: check
 check: lint typecheck
